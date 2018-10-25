@@ -21,12 +21,12 @@ file_label = file_in[:-4]
 dat_raw = np.loadtxt(file_in, skiprows=1, delimiter=',')
 beta    = float(sys.argv[2])    # heating rate, K/min
 
-print "==========================================================="
-print " "
-print " Fitting TGA data from file: ", file_in
-print "   at heating rate of ", beta, " K/min."
-print " "
-print "-----------------------------------------------------------"
+print("===========================================================")
+print(" ")
+print(" Fitting TGA data from file: ", file_in)
+print("   at heating rate of ", beta, " K/min.")
+print(" ")
+print("-----------------------------------------------------------")
 
 # parse input data
 T_d     = dat_raw[:,0] + 273.15     # data temperatures, K
@@ -62,24 +62,24 @@ e_m_m1, e_mDot_m1 = ft.error_2( m_d, mDot_d, m_m1, mDot_m1 )
 e_m_m2, e_mDot_m2 = ft.error_2( m_d, mDot_d, m_m2, mDot_m2 )
 
 # print results to terminal
-print " "
-print "Number of reactions = ", len(I_p)
-print " "
-print "Method 1 Results: "
-print "  L_2 Mass Error           = ", e_m_m1
-print "  L_2 Mass Loss Rate Error = ", e_mDot_m1
-print "  A (1/s)                  = ", K_m1[0,:]
-print "  E (kJ/mol)               = ", K_m1[1,:]
-print "  dm (-)                   = ", K_m1[2,:]
-print " "
-print "Method 2 Results: "
-print "  L_2 Mass Error           = ", e_m_m2
-print "  L_2 Mass Loss Rate Error = ", e_mDot_m2
-print "  A (1/s)                  = ", K_m2[0,:]
-print "  E (kJ/mol)               = ", K_m2[1,:]
-print "  dm (-)                   = ", K_m2[2,:]
-print " "
-print "==========================================================="
+print(" ")
+print("Number of reactions = ", len(I_p))
+print(" ")
+print("Method 1 Results: ")
+print("  L_2 Mass Error           = ", e_m_m1)
+print("  L_2 Mass Loss Rate Error = ", e_mDot_m1)
+print("  A (1/s)                  = ", K_m1[0,:])
+print("  E (kJ/mol)               = ", K_m1[1,:])
+print("  dm (-)                   = ", K_m1[2,:])
+print(" ")
+print("Method 2 Results: ")
+print("  L_2 Mass Error           = ", e_m_m2)
+print("  L_2 Mass Loss Rate Error = ", e_mDot_m2)
+print("  A (1/s)                  = ", K_m2[0,:])
+print("  E (kJ/mol)               = ", K_m2[1,:])
+print("  dm (-)                   = ", K_m2[2,:])
+print(" ")
+print("===========================================================")
 
 # convert units for plotting
 mDot_d  = mDot_d*beta
