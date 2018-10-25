@@ -87,14 +87,14 @@ def shape2arrhenius( T_p, delT, beta ):
 
     return A, E
 
-# compute L_2 error
+# compute RMS error
 def error_2( m_d, mDot_d, m_m, mDot_m ):
 
     # clip data to active region
     I_c = np.where( (m_d < 0.98*m_d[0])*(m_d > 1.02*m_d[-1]) )
-    
-    e_2_m = np.sum( (m_d[I_c] - m_m[I_c])**2 )/np.sqrt(len(I_c[0]))
-    e_2_mDot = np.sum( (mDot_d[I_c] - mDot_m[I_c])**2 )/np.sqrt(len(I_c[0]))
+
+    e_2_m = np.sqrt(np.sum( (m_d[I_c] - m_m[I_c])**2 )/len(I_c[0]))
+    e_2_mDot = np.sqrt(np.sum( (mDot_d[I_c] - mDot_m[I_c])**2 )/len(I_c[0]))
 
     return e_2_m, e_2_mDot
 
