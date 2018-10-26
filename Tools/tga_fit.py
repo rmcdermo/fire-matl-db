@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 
 Main script for fitting TGA data 
@@ -57,9 +57,17 @@ K_m2        = np.vstack((A_m2, E_m2, dm_m))
 m_m2        = ft.predict_tga( 'parallel', K_m2, beta, np.append(dm_m, 1.), T_d )
 mDot_m2     = ft.smooth_mlr( T_d, m_m2, dT_c )
 
+# Method 3: linear fit
+T_m3, dT_m3 = ft.linear_fit( I_p, m_t, dm_m, dT_m2, T_d, m_d )
+A_m3, E_m3  = ft.shape2arrhenius( T_p, dT_m3, beta )
+K_m3        = np.vstack((A_m3, E_m3, dm_m))
+m_m3        = ft.predict_tga( 'parallel', K_m3, beta, np.append(dm_m, 1.), T_d )
+mDot_m3     = ft.smooth_mlr( T_d, m_m3, dT_c )
+
 # compute L_2 errors for masses
 e_m_m1, e_mDot_m1 = ft.error_2( m_d, mDot_d, m_m1, mDot_m1 )
 e_m_m2, e_mDot_m2 = ft.error_2( m_d, mDot_d, m_m2, mDot_m2 )
+e_m_m3, e_mDot_m3 = ft.error_2( m_d, mDot_d, m_m3, mDot_m3 )
 
 # print results to terminal
 print(" ")
@@ -79,12 +87,20 @@ print("  A (1/s)                  = ", K_m2[0,:])
 print("  E (kJ/mol)               = ", K_m2[1,:])
 print("  dm (-)                   = ", K_m2[2,:])
 print(" ")
+print("Method 3 Results: ")
+print("  RMS Mass Error           = ", e_m_m3)
+print("  RMS Mass Loss Rate Error = ", e_mDot_m3)
+print("  A (1/s)                  = ", K_m3[0,:])
+print("  E (kJ/mol)               = ", K_m3[1,:])
+print("  dm (-)                   = ", K_m3[2,:])
+print(" ")
 print("===========================================================")
 
 # convert units for plotting
 mDot_d  = mDot_d*beta
 mDot_m1 = mDot_m1*beta
 mDot_m2 = mDot_m2*beta
+mDot_m3 = mDot_m3*beta
 T_d     = T_d - 273.15
 
 # plotting parameters plot
@@ -97,7 +113,8 @@ plt.rc('ytick', labelsize=18)
 plt.figure(1)
 plt.plot(T_d, mDot_d, 'k-', label='Expt.')
 plt.plot(T_d, mDot_m1, 'r--', label='Method 1')
-plt.plot(T_d, mDot_m2, 'g--', label='Method 2')
+plt.plot(T_d, mDot_m2, 'g-.', label='Method 2')
+plt.plot(T_d, mDot_m3, 'b:', label='Method 3')
 plt.xlabel(r"Temperature ($^{\circ}$ C)", fontsize=22)
 plt.ylabel(r"Residual Mass Loss Rate (1/s)", fontsize=22)
 plt.legend(loc=1, numpoints=1, prop={'size':16})
@@ -107,7 +124,8 @@ plt.savefig(file_label + "_mlr_fit.pdf")
 plt.figure(2)
 plt.plot(T_d, m_d, 'k-', label='Expt.')
 plt.plot(T_d, m_m1, 'r--', label='Method 1')
-plt.plot(T_d, m_m2, 'g--', label='Method 2')
+plt.plot(T_d, m_m2, 'g-.', label='Method 2')
+plt.plot(T_d, m_m3, 'b:', label='Method 3')
 plt.xlabel(r"Temperature ($^{\circ}$ C)", fontsize=22)
 plt.ylabel(r"Residual Mass Fraction", fontsize=22)
 plt.legend(loc=1, numpoints=1, prop={'size':16})

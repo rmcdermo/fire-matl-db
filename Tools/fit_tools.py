@@ -215,3 +215,26 @@ def approx_point_estimate( mDot_p, m_t, dm ):
 
     return dm/(e*mDot_p)
 
+# linear fit method for peak widths and temperatures, Method 3
+def linear_fit( I_p, m_t, dm, dT_e, T, m ):
+
+    N_r     = len( I_p )            # number of reactions
+    h       = T[1] - T[0]           # temperature step size
+    
+    # initiate fit peak temperatures and peak widths
+    T_p_f    = np.zeros( N_r )
+    dT_f    = np.zeros( N_r )
+
+    for i in range(0, N_r):
+        
+        # compute fit data
+        dI_p    = int( 0.5*dT_e[i]/h )
+        j_ar    = np.arange(I_p[i] - dI_p, I_p[i] + dI_p + 1)
+        y       = T[j_ar]
+        x       = np.log( -np.log( (m[j_ar] - m_t[i+1])/dm[i] ) )
+        
+        # fit parameters
+        dT_f[i], T_p_f[i]  = np.polyfit( x, y, 1 )
+    
+    return T_p_f, dT_f
+

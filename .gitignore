@@ -2,6 +2,10 @@
 .DS_Store
 ._*
 
+# Python files
+*.pyc
+*.py.swp
+
 # compiler output files
 *.exe
 *.o
