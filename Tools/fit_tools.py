@@ -68,6 +68,39 @@ def predict_tga( mech, K, beta, m_0, T ):
 
     return m 
 
+# Generate manufactured, noisy TGA data for analysis
+def generate_tga( mech, K, beta, T_range, smp_rate, noise ):
+     
+    # compute number of data points and temperature values
+    N_pts   = int( (T_range[1] - T_range[0])*smp_rate/beta )
+    T       = np.linspace( T_range[0], T_range[1], N_pts )
+
+    N_r     = K.shape[1] 
+    
+    if mech == 'series':
+        m_0     = np.zeros( N_r + 1 )
+        m_0[0]  = 1.
+
+        # integrate with known parameters
+        m_ar    = odeint( series_mechanism, m_0, T, args=(K, beta) )
+        m       = np.sum( m_ar, 1 )
+    
+    if mech == 'parallel':
+        dm_i    = K[2,:] 
+        m_0     = np.append( dm_i, 1. )
+
+        # integrate with known parameters
+        m_ar    = odeint( parallel_mechanism, m_0, T, args=(K, beta) )
+        m       = m_ar[:,-1]
+
+    # add noise
+    m       = m + np.random.normal( 0., noise, N_pts )
+    
+    # clip small/negative values
+    m[np.where( m < 1e-9 )] = 0.
+
+    return T, m
+
 # Compute smoothed mass loss rate
 def smooth_mlr( T, m, dT_c ):
    
